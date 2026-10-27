@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <script src="script.js" defer></script>
+    <title>Cubing Timer</title>
+
+    <style>
+        body{
+            font-family:'Times New Roman', Times, serif;
+            text-align: center;
+            background-color: lightblue;
+        }
+
+        .sidebar{
+            position: fixed;
+            left: 0px;
+            top: 0px;
+            width: 18vw;
+            height: 100vh;
+            padding: 20px;
+            background-color: rgb(186, 184, 184);
+        }
+
+        .dropdown{
+            position: relative;
+            display: inline-block;
+            width: 250px;
+            z-index: 20;
+        }
+
+        .dropbtn{
+            width: 100%;
+            background-color: #dddddd;
+            border: none;
+            font-size: 12px;
+            cursor: pointer;
+            text-align: left;
+
+        }
+
+        .dropdown-content{
+            position: absolute;
+            width: 100%;
+            display: none;
+            z-index: 20;
+        }
+
+        .dropdown-content button{
+            display: block;
+            width: 100%;
+            text-align: left;
+        }
+
+        .dropdown-content button:hover{
+            background-color: #dddddd;
+        }
+
+        .dropdown:hover .dropdown-content{
+            display: block;
+        }
+
+        .mode_dropdown{
+            position: relative;
+            display: inline-block;
+            width: 250px;
+            padding-top: 10px;
+            z-index: 10;
+        }
+
+        .modebtn{
+            width: 100%;
+            background-color: #dddddd;
+            border: none;
+            font-size: 12px;
+            cursor: pointer;
+            text-align: left;
+        }
+
+        .mode{
+            display: none;
+            position: absolute;
+            width: 100%;
+            top: 100%;
+            z-index: 10;
+        }
+
+        .mode button{
+            display: block;
+            width: 100%;
+            text-align: left;
+        }
+
+        .mode button:hover{
+            background-color: #dddddd;
+        }
+
+        .mode_dropdown:hover .mode{
+            display: block;
+        }
+
+        .topbar{
+            position: fixed;
+            top: 0;
+            margin-left: 21vw;
+            width: 78vw;
+            height: 15vh;
+            background-color: rgb(186, 184, 184);
+        }
+
+        .topbar h3{
+            display: flex;
+            justify-content: flex-start;
+            align-items: flex-start;
+            padding-left: 15px;
+            font-size: 15px;
+        }
+
+        .nextbtn{
+            position: fixed;
+            top: 15px;
+            left: 930px;
+            font-weight: bold;
+            background-color:rgb(186, 184, 184);
+        }
+
+        .lastbtn{
+            position: fixed;
+            top: 15px;
+            left: 880px;
+            font-weight: bold;
+            background-color: rgb(186, 184, 184);
+        }
+
+        .scramblebox{
+            width: 78%;
+            margin: 0 auto;
+            display: block;
+        }
+
+        .scramble{
+            display: relative;
+            font-size: 25px;
+        }
+
+        .timer{
+            font-size: 100px;
+            font-weight: bold;
+            position: fixed;
+            top: 360px;
+            left: 750px;
+        }
+
+        .timerColor{
+            color: black;
+        }
+
+        .timesList{
+            margin-top: 50px;
+            width: 250px;
+            margin-left: 10px;
+            max-height: 70vh;
+            overflow-y: auto;
+        }
+
+        #timesTable{
+            text-align: left;
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        #timesTable th{
+            font-size: 16px;
+            border: 1px solid black;
+            background-color: #dddddd;
+            font-weight: 200;
+        }
+
+        #timesTable td{
+            font-size: 14px;
+            background-color: #cccccc;
+            border: 1px solid black;
+        }
+
+        .difference{
+            visibility: hidden;
+            font-size: 30px;
+            position: fixed;
+            top: 340px;
+            left: 890px;
+            color: rgb(11, 206, 11)
+        }
+
+        .averageText{
+            font-size: 23px;
+        }
+
+        .ao5Text{
+            position: fixed;
+            top: 470px;
+            left: 860px;
+            visibility: hidden;
+        }
+
+        .ao12Text{
+            position: fixed;
+            top: 500px;
+            left: 860px;
+            visibility: hidden;
+        }
+
+    </style>
+</head>
+
+<body>
+    <div class="sidebar">
+        <div class="dropdown">
+            <button class="dropbtn" id = "session_btn">3x3</button>
+            <div class="dropdown-content">
+                <button onclick="changeSession('3x3')">3x3</button>
+                <button onclick="changeSession('2x2')">2x2</button>
+                <button onclick="changeSession('Skewb')">Skewb</button>
+                <button onclick="changeSession('4x4')">4x4</button>
+            </div>
+        </div>
+        <div class="mode_dropdown">
+            <button class="modebtn" id = "mode_btn">Competition</button>
+            <div class="mode">
+                <button onclick="changeMode('Competition')">Competition</button>
+                <button onclick="changeMode('Practice')">Practice</button>
+            </div>
+        </div>
+        <div class="timesList">
+            <table id="timesTable">
+                <thead>
+                    <tr>
+                        <th>No.</th>
+                        <th>Time</th>
+                        <th>ao5</th>
+                        <th>ao12</th>
+                    </tr>
+                </thead>
+                <tbody id="tableBody">
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="topbar">
+        <h3>Cubing Timer</h3>
+        <div class="topbarButtons">
+            <button class="nextbtn" id = "next_btn" onclick="newScramble()">Next</button>
+            <button class="lastbtn" id = "last_btn" onclick="lastScramble()">Last</button>
+        </div>
+        <div class="scramblebox">
+            <div class="scramble" id = "scramble">
+                Scramble
+            </div>
+        </div>
+    </div>
+
+    <div>
+        <div class="difference" id="difference">
+            (FillerText)
+        </div>
+        <div class="averageText" id="averages">
+            <div class="ao5Text" id="ao5Text">
+                ao5: 00.00.00
+            </div>
+            <div class="ao12Text" id="ao12Text">
+                ao12: 00.00.00
+            </div>
+        </div>
+        <div class="timer">
+            <div id="timer">
+                <span class="timerColor" id = "timerText">00:00.00</span>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
